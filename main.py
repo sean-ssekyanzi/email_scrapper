@@ -1,20 +1,19 @@
-# def file_reader(filename:str)->str:
-#     print(f" reading files in {filename}")
-#     return filename
-    
-
 def company_reader(filename:str)->str:
+    print(f" reading companies in {filename}")
     try:
-        with open('file.txt','r') as file:
+        with open(filename,'r') as file:
             # read_content = file.read()
             for item in file:
                 print(item.rstrip("\n"))
+                return item
     except Exception as e:
         print("An error occured:", str(e))
 
+        
 
-def grabs_url()->str:
-    pass
+def grabs_url(company_name:str)->str:
+    print(f"accessing {company_name}")
+
 
 
 

@@ -1,7 +1,5 @@
-from main import company_reader
+from main import company_reader,grabs_url
  
-# file_reader(filename="files.txt")
-company_reader(filename="file.txt")
 
-
-
+company_reader("file.txt")
+grabs_url(company_reader("file.txt"))
