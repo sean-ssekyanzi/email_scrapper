@@ -4,7 +4,8 @@ def company_reader(filename:str)->list:
     try:
         with open(filename,'r') as file:
             for item in file:
-                companies.append(item)
+                strip = item.rstrip('\n')
+                companies.append(strip)
                 # print(item.rstrip("\n"))
                 print(companies)
                 
@@ -13,8 +14,10 @@ def company_reader(filename:str)->list:
     return companies
         
 
-# def grabs_url(company_name:str)->str:
-#     print(f"accessing {company_name}")
+def grabs_url(company_reader)->str:
+    print(f"accessing {company_reader}")
+    print(company_reader)
+
 
 
 
