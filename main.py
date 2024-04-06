@@ -1,3 +1,6 @@
+import requests
+from bs4 import BeautifulSoup
+
 def company_reader(filename:str)->list:
     print(f" reading companies in {filename}")
     companies = []
@@ -6,9 +9,7 @@ def company_reader(filename:str)->list:
             for item in file:
                 strip = item.rstrip('\n')
                 companies.append(strip)
-                # print(item.rstrip("\n"))
-                print(companies)
-                
+            print(companies) 
     except Exception as e:
         print("An error occured:", str(e))
     return companies
@@ -16,11 +17,18 @@ def company_reader(filename:str)->list:
 
 def grabs_url(company_reader)->str:
     print(f"accessing {company_reader}")
-    print(company_reader)
-
-
-
-
+    list = company_reader
+    for url in list:
+        print(url)
+        page = requests.get(f'https://www.google.com/search?q={url}')
+        print(page.status_code) 
+        soup = BeautifulSoup(page.text,'html.parser')
+        soup.prettify()
+        # print(soup.find_all('a'))
+        for link in soup.find_all('a'):
+            links = (link.get('href'))
+            print(links)
+    return links
 
 
 
