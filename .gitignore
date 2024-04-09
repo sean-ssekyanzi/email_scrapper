@@ -3,5 +3,3 @@ __pycache__
 .vscode
 venv
 .coverage
-venv copy
-.coverage copy
