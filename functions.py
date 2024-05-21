@@ -6,30 +6,35 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+
 
 
 def company_reader(filename:str)->list:
-    print(f" reading companies in {filename}")
+    # print(f" reading companies in {filename}")
     companies = []
     try:
         with open(filename,'r') as file:
             for item in file:
                 strip = item.rstrip('\n')
                 companies.append(strip)
-            print(companies) 
+            # print(companies) 
     except Exception as e:
         print("An error occured:", str(e))
     return companies
         
 
 def grabs_page(company)->str:
-    print(f"accessing {company}")
-    page = requests.get(f'https://www.google.com/search?q={company}')
-    response = page.text
-    if page.status_code == 200:
-        print("process is successful")
-    elif page.status_code == 404:
-        print("not found")
+    try:
+        page = requests.get(f'https://www.google.com/search?q={company}')
+        response = page.text
+        if page.status_code == 200:
+            print("page found")
+        elif page.status_code == 404:
+            print("not found")
+    except Exception as e:
+        print(f'an error has occured {e}')
     return response
 
 def all_url_links(response):
@@ -46,21 +51,25 @@ def facebook_link(links):
             if 'facebook' in link:
                 slicer=slice(7,-86)
                 sliced = link[slicer]
-                print(f" --->   {sliced}")
+                # print(f" --->   {sliced}")
                 return sliced.replace('&s','')
     except Exception as e:
         print("an error occured: ",str(e))
     return 'not found'
  
 def get_facebook_page(facebook_link):
-    print(f'connecting to {facebook_link}')
-    # options = Options()
+    options = Options()
+    options.headless = True
     # options.binary_location = r'/usr/bin/firefox'
     # service = Service('/bin/firefox.geckodriver')
     # browser = webdriver.Firefox()
-    browser = webdriver.Chrome()
+    service = Service(executable_path=r'/usr/bin/chromedriver')
+    browser = webdriver.Chrome(service=service, options=options)
     browser.get(facebook_link)
+    facebook_page = browser.page_source
+    # print(facebook_page)
     browser.quit()
+    return facebook_page
     # page = requests.get(facebook_link)
     # facebook_page = page.text
     # return facebook_page
@@ -71,9 +80,19 @@ def get_facebook_page(facebook_link):
 
 
 def pick_phonenumber(facebook_page):
-    phone_pattern = "\d{3}\s\d{7}"
-    print(re.match(phone_pattern,facebook_page))
+    pattern = r'\d{3,4}\s\d{6,7}'
+    phonenumber = re.findall(pattern,facebook_page)
+    # print(f"----> {matches}")
+    return phonenumber
 
+def formatting(matches):
+    contact_value = matches[0]
+    return contact_value
+
+
+def result_panel(company,contact_value):
+    results = {company:contact_value}
+    return results
 
 
 if __name__ == "main":

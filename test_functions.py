@@ -1,5 +1,10 @@
-from main import company_reader,grabs_url
+from main import company_reader,grabs_page
 import pytest
+from unittest.mock import patch, MagicMock
+import unittest
+
+
+
 
 def test_company_reader():
     file = "testfile.txt"
@@ -7,7 +12,11 @@ def test_company_reader():
     expected = ['umeme','stanbic', 'jesa']
     assert result ==  expected
 
-def test_grabs_url():
-    expected = 200
-    actual = grabs_url(company_reader='testfile.txt')
-    assert actual == expected
+@patch('functions.grabs_page')
+def test_grabs_page(mock_requests):
+    company = "new vision"
+    mock_response = MagicMock()
+    mock_response.text = "success"
+    mock_requests.get.return_value = mock_response
+    actual = grabs_page(company)
+    assert mock_response == actual  
